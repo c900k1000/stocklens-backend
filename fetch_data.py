@@ -6,15 +6,16 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import uvicorn
 
-# 修正 SSL 憑證路徑
+# 修正憑證路徑
 os.environ['SSL_CERT_FILE'] = certifi.where()
 os.environ['CURL_CA_BUNDLE'] = certifi.where()
 
 load_dotenv()
 
+# 初始化 FastAPI
 app = FastAPI()
 
-# 建立資料庫連線
+# 建立資料庫連線 (請確保 Variables 裡的 URL 包含 .pulzbznngdwumyiafelv)
 DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 
@@ -25,7 +26,6 @@ def home():
 
 @app.get("/update")
 def run_scraper():
-    # 這裡放你原本的爬蟲邏輯
     try:
         stock = yf.Ticker("2330.TW")
         df = stock.history(period="1mo")
@@ -46,4 +46,5 @@ def run_scraper():
 if __name__ == "__main__":
     # 關鍵：讓程式監聽 Railway 分配的 PORT 且不要跑完就結束
     port = int(os.environ.get("PORT", 8000))
+    # host 必須設定為 0.0.0.0 才能讓外部連線
     uvicorn.run(app, host="0.0.0.0", port=port)
