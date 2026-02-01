@@ -44,7 +44,8 @@ def run_scraper():
         return {"status": "error", "message": str(e)}
 
 if __name__ == "__main__":
-    # 關鍵：讓程式監聽 Railway 分配的 PORT 且不要跑完就結束
+    import uvicorn
+    # 讀取 Railway 提供的 PORT，如果沒有就用 8000
     port = int(os.environ.get("PORT", 8000))
-    # host 必須設定為 0.0.0.0 才能讓外部連線
+    # 必須綁定 0.0.0.0
     uvicorn.run(app, host="0.0.0.0", port=port)
